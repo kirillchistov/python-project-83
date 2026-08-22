@@ -5,6 +5,7 @@ description = "Page Analyzer — web application for SEO page analysis"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "beautifulsoup4>=4.15.0",
     "flask>=3.1.3",
     "gunicorn>=26.1.0",
     "psycopg[binary]>=3.3.4",

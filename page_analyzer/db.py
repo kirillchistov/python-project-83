@@ -72,15 +72,27 @@ def get_urls():
             return cur.fetchall()
 
 
-def create_check(url_id, status_code):
+def create_check(url_id, status_code, h1, title, description):
     query = """
-        INSERT INTO url_checks (url_id, status_code, created_at)
-        VALUES (%s, %s, %s)
+        INSERT INTO url_checks (
+            url_id, status_code, h1, title, description, created_at
+        )
+        VALUES (%s, %s, %s, %s, %s, %s)
         RETURNING id
     """
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute(query, (url_id, status_code, datetime.now()))
+            cur.execute(
+                query,
+                (
+                    url_id,
+                    status_code,
+                    h1[:255] if h1 else h1,
+                    title[:255] if title else title,
+                    description,
+                    datetime.now(),
+                ),
+            )
             return cur.fetchone()["id"]
 
 

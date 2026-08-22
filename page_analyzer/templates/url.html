@@ -77,13 +77,13 @@
                 {{ check.status_code or "" }}
               </td>
               <td class="px-4 py-3 text-sm text-gray-900">
-                {{ check.h1 or "" }}
+                {{ check.h1 | truncate_seo }}
               </td>
               <td class="px-4 py-3 text-sm text-gray-900">
-                {{ check.title or "" }}
+                {{ check.title | truncate_seo }}
               </td>
               <td class="px-4 py-3 text-sm text-gray-900">
-                {{ check.description or "" }}
+                {{ check.description | truncate_seo }}
               </td>
               <td class="px-4 py-3 text-sm text-gray-900">
                 {{ check.created_at.strftime("%Y-%m-%d") }}

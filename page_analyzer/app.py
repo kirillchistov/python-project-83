@@ -21,7 +21,7 @@ from .db import (
     get_checks,
     get_urls,
 )
-from .http import get_url_status_code
+from .http import check_url, truncate_seo
 from .url_utils import is_valid_url, normalize_url
 
 load_dotenv()
@@ -33,6 +33,7 @@ app = Flask(
     static_folder=str(APP_DIR / "static"),
 )
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
+app.jinja_env.filters["truncate_seo"] = truncate_seo
 
 
 @app.route("/")
@@ -78,10 +79,16 @@ def url_checks(id):
     if url is None:
         abort(404)
     try:
-        status_code = get_url_status_code(url["name"])
+        check = check_url(url["name"])
     except RequestException:
         flash("Произошла ошибка при проверке", "danger")
     else:
-        create_check(id, status_code)
+        create_check(
+            id,
+            check["status_code"],
+            check["h1"],
+            check["title"],
+            check["description"],
+        )
         flash("Страница успешно проверена", "success")
     return redirect(url_for("url_show", id=id))
