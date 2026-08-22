@@ -1,4 +1,4 @@
-.PHONY: install dev start build render-start lint
+.PHONY: install dev start build build-css watch-css render-start lint
 
 PORT ?= 8000
 export PATH := $(CURDIR)/.venv/bin:$(PATH)
@@ -14,6 +14,14 @@ start:
 
 build:
 	./build.sh
+
+build-css:
+	npm ci
+	mkdir -p page_analyzer/static
+	npx @tailwindcss/cli -i ./assets/app.css -o ./page_analyzer/static/style.css --minify
+
+watch-css:
+	npx @tailwindcss/cli -i ./assets/app.css -o ./page_analyzer/static/style.css --watch
 
 render-start:
 	gunicorn -w 5 -b 0.0.0.0:$(PORT) page_analyzer:app
