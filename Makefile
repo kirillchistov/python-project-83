@@ -16,9 +16,10 @@ build:
 	./build.sh
 
 build-css:
-	npm ci
+	npm ci --include=dev
 	mkdir -p page_analyzer/static
-	npx @tailwindcss/cli -i ./assets/app.css -o ./page_analyzer/static/style.css --minify
+	npx --no-install @tailwindcss/cli -i ./assets/app.css -o ./page_analyzer/static/style.css --minify
+	test -s page_analyzer/static/style.css
 
 watch-css:
 	npx @tailwindcss/cli -i ./assets/app.css -o ./page_analyzer/static/style.css --watch
