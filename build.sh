@@ -56,3 +56,14 @@ if src != dst:
     dst.write_bytes(src.read_bytes())
     print(f"copied CSS to {dst}")
 PY
+
+if [ -z "${DATABASE_URL:-}" ]; then
+  echo "DATABASE_URL is not set" >&2
+  exit 1
+fi
+
+if command -v psql >/dev/null 2>&1; then
+  psql -a -d "$DATABASE_URL" -f database.sql
+else
+  make migrate
+fi

@@ -2,7 +2,18 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
-from flask import Flask, render_template
+from flask import (
+    Flask,
+    abort,
+    flash,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
+
+from .db import create_url, find_url_by_id, find_url_by_name, get_urls
+from .url_utils import is_valid_url, normalize_url
 
 load_dotenv()
 
@@ -18,3 +29,34 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 @app.route("/")
 def index():
     return render_template("index.html")
+
+
+@app.post("/urls")
+def urls_create():
+    raw_url = request.form.get("url", "").strip()
+    if not is_valid_url(raw_url):
+        flash("Некорректный URL", "danger")
+        return render_template("index.html", url=raw_url), 422
+
+    name = normalize_url(raw_url)
+    existing = find_url_by_name(name)
+    if existing:
+        flash("Страница уже существует", "info")
+        return redirect(url_for("url_show", id=existing["id"]))
+
+    url_id = create_url(name)
+    flash("Страница успешно добавлена", "success")
+    return redirect(url_for("url_show", id=url_id))
+
+
+@app.get("/urls")
+def urls():
+    return render_template("urls.html", urls=get_urls())
+
+
+@app.get("/urls/<int:id>")
+def url_show(id):
+    url = find_url_by_id(id)
+    if url is None:
+        abort(404)
+    return render_template("url.html", url=url)

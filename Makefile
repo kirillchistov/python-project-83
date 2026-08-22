@@ -1,4 +1,4 @@
-.PHONY: install dev start build build-css watch-css render-start lint
+.PHONY: install dev start build build-css watch-css render-start lint migrate
 
 PORT ?= 8000
 export PATH := $(CURDIR)/.venv/bin:$(PATH)
@@ -29,3 +29,6 @@ render-start:
 
 lint:
 	uv run flake8
+
+migrate:
+	uv run python -c "from page_analyzer.db import apply_migrations; apply_migrations()"

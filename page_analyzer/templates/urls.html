@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% block title %}Сайты{% endblock %}
+
+{% block content %}
+  <div class="container mx-auto px-4 py-8">
+    <h1 class="mb-6 text-3xl font-bold text-gray-900">Сайты</h1>
+    <div class="overflow-x-auto rounded-lg border border-gray-200 bg-white">
+      <table class="min-w-full divide-y divide-gray-200" data-test="urls">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+              ID
+            </th>
+            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+              Имя
+            </th>
+            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+              Дата создания
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          {% for url in urls %}
+            <tr>
+              <td class="px-4 py-3 text-sm text-gray-900">{{ url.id }}</td>
+              <td class="px-4 py-3 text-sm">
+                <a
+                  class="text-blue-600 hover:underline"
+                  href="{{ url_for('url_show', id=url.id) }}"
+                >
+                  {{ url.name }}
+                </a>
+              </td>
+              <td class="px-4 py-3 text-sm text-gray-900">
+                {{ url.created_at.strftime('%Y-%m-%d') }}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}

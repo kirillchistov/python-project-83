@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ url.name }}{% endblock %}
+
+{% block content %}
+  <div class="container mx-auto px-4 py-8">
+    <h1 class="mb-6 text-3xl font-bold text-gray-900">Сайт: {{ url.name }}</h1>
+    <div class="overflow-x-auto rounded-lg border border-gray-200 bg-white">
+      <table class="min-w-full divide-y divide-gray-200" data-test="url">
+        <tbody class="divide-y divide-gray-200">
+          <tr>
+            <td class="w-48 bg-gray-50 px-4 py-3 text-sm font-semibold text-gray-700">
+              ID
+            </td>
+            <td class="px-4 py-3 text-sm text-gray-900">{{ url.id }}</td>
+          </tr>
+          <tr>
+            <td class="bg-gray-50 px-4 py-3 text-sm font-semibold text-gray-700">
+              Имя
+            </td>
+            <td class="px-4 py-3 text-sm text-gray-900">{{ url.name }}</td>
+          </tr>
+          <tr>
+            <td class="bg-gray-50 px-4 py-3 text-sm font-semibold text-gray-700">
+              Дата создания
+            </td>
+            <td class="px-4 py-3 text-sm text-gray-900">
+              {{ url.created_at.strftime('%Y-%m-%d') }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}
