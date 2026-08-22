@@ -31,5 +31,67 @@
         </tbody>
       </table>
     </div>
+
+    <form
+      class="mt-6"
+      method="post"
+      action="{{ url_for('url_checks', id=url.id) }}"
+    >
+      <input
+        class="rounded-md bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700"
+        type="submit"
+        value="Запустить проверку"
+      >
+    </form>
+
+    <h2 class="mt-10 mb-4 text-2xl font-bold text-gray-900">Проверки</h2>
+    <div class="overflow-x-auto rounded-lg border border-gray-200 bg-white">
+      <table class="min-w-full divide-y divide-gray-200" data-test="checks">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+              ID
+            </th>
+            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+              Код ответа
+            </th>
+            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+              h1
+            </th>
+            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+              title
+            </th>
+            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+              description
+            </th>
+            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+              Дата создания
+            </th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          {% for check in checks %}
+            <tr>
+              <td class="px-4 py-3 text-sm text-gray-900">{{ check.id }}</td>
+              <td class="px-4 py-3 text-sm text-gray-900">
+                {{ check.status_code or "" }}
+              </td>
+              <td class="px-4 py-3 text-sm text-gray-900">
+                {{ check.h1 or "" }}
+              </td>
+              <td class="px-4 py-3 text-sm text-gray-900">
+                {{ check.title or "" }}
+              </td>
+              <td class="px-4 py-3 text-sm text-gray-900">
+                {{ check.description or "" }}
+              </td>
+              <td class="px-4 py-3 text-sm text-gray-900">
+                {{ check.created_at.strftime("%Y-%m-%d") }}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </div>
 {% endblock %}

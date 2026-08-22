@@ -50,9 +50,15 @@ def create_url(name):
 
 def get_urls():
     query = """
-        SELECT id, name, created_at
+        SELECT
+            urls.id,
+            urls.name,
+            urls.created_at,
+            MAX(url_checks.created_at) AS last_check_at
         FROM urls
-        ORDER BY created_at DESC, id DESC
+        LEFT JOIN url_checks ON url_checks.url_id = urls.id
+        GROUP BY urls.id, urls.name, urls.created_at
+        ORDER BY urls.created_at DESC, urls.id DESC
     """
     with get_connection() as conn:
         with conn.cursor() as cur:
@@ -60,7 +66,38 @@ def get_urls():
             return cur.fetchall()
 
 
+def create_check(url_id):
+    query = """
+        INSERT INTO url_checks (url_id, created_at)
+        VALUES (%s, %s)
+        RETURNING id
+    """
+    with get_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(query, (url_id, datetime.now()))
+            return cur.fetchone()["id"]
+
+
+def get_checks(url_id):
+    query = """
+        SELECT id, url_id, status_code, h1, title, description, created_at
+        FROM url_checks
+        WHERE url_id = %s
+        ORDER BY id DESC
+    """
+    with get_connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(query, (url_id,))
+            return cur.fetchall()
+
+
 def apply_migrations():
     schema = Path(__file__).resolve().parent.parent / "database.sql"
+    statements = [
+        part.strip()
+        for part in schema.read_text().split(";")
+        if part.strip()
+    ]
     with get_connection() as conn:
-        conn.execute(schema.read_text())
+        for statement in statements:
+            conn.execute(statement)

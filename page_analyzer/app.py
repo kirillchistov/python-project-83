@@ -12,7 +12,14 @@ from flask import (
     url_for,
 )
 
-from .db import create_url, find_url_by_id, find_url_by_name, get_urls
+from .db import (
+    create_check,
+    create_url,
+    find_url_by_id,
+    find_url_by_name,
+    get_checks,
+    get_urls,
+)
 from .url_utils import is_valid_url, normalize_url
 
 load_dotenv()
@@ -59,4 +66,18 @@ def url_show(id):
     url = find_url_by_id(id)
     if url is None:
         abort(404)
-    return render_template("url.html", url=url)
+    checks = get_checks(id)
+    return render_template("url.html", url=url, checks=checks)
+
+
+@app.post("/urls/<int:id>/checks")
+def url_checks(id):
+    url = find_url_by_id(id)
+    if url is None:
+        abort(404)
+    try:
+        create_check(id)
+        flash("Страница успешно проверена", "success")
+    except Exception:
+        flash("Произошла ошибка при проверке", "danger")
+    return redirect(url_for("url_show", id=id))
