@@ -11,6 +11,7 @@ from flask import (
     request,
     url_for,
 )
+from requests.exceptions import RequestException
 
 from .db import (
     create_check,
@@ -20,6 +21,7 @@ from .db import (
     get_checks,
     get_urls,
 )
+from .http import get_url_status_code
 from .url_utils import is_valid_url, normalize_url
 
 load_dotenv()
@@ -76,8 +78,10 @@ def url_checks(id):
     if url is None:
         abort(404)
     try:
-        create_check(id)
-        flash("Страница успешно проверена", "success")
-    except Exception:
+        status_code = get_url_status_code(url["name"])
+    except RequestException:
         flash("Произошла ошибка при проверке", "danger")
+    else:
+        create_check(id, status_code)
+        flash("Страница успешно проверена", "success")
     return redirect(url_for("url_show", id=id))

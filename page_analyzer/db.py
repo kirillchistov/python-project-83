@@ -54,10 +54,16 @@ def get_urls():
             urls.id,
             urls.name,
             urls.created_at,
-            MAX(url_checks.created_at) AS last_check_at
+            last_checks.created_at AS last_check_at,
+            last_checks.status_code AS last_status_code
         FROM urls
-        LEFT JOIN url_checks ON url_checks.url_id = urls.id
-        GROUP BY urls.id, urls.name, urls.created_at
+        LEFT JOIN LATERAL (
+            SELECT created_at, status_code
+            FROM url_checks
+            WHERE url_checks.url_id = urls.id
+            ORDER BY url_checks.id DESC
+            LIMIT 1
+        ) AS last_checks ON true
         ORDER BY urls.created_at DESC, urls.id DESC
     """
     with get_connection() as conn:
@@ -66,15 +72,15 @@ def get_urls():
             return cur.fetchall()
 
 
-def create_check(url_id):
+def create_check(url_id, status_code):
     query = """
-        INSERT INTO url_checks (url_id, created_at)
-        VALUES (%s, %s)
+        INSERT INTO url_checks (url_id, status_code, created_at)
+        VALUES (%s, %s, %s)
         RETURNING id
     """
     with get_connection() as conn:
         with conn.cursor() as cur:
-            cur.execute(query, (url_id, datetime.now()))
+            cur.execute(query, (url_id, status_code, datetime.now()))
             return cur.fetchone()["id"]
 
 

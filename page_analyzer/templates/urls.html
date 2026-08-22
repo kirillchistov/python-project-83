@@ -21,6 +21,9 @@
             <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">
               Последняя проверка
             </th>
+            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+              Код ответа
+            </th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
@@ -42,6 +45,9 @@
                 {% if url.last_check_at %}
                   {{ url.last_check_at.strftime('%Y-%m-%d') }}
                 {% endif %}
+              </td>
+              <td class="px-4 py-3 text-sm text-gray-900">
+                {{ url.last_status_code or "" }}
               </td>
             </tr>
           {% endfor %}
