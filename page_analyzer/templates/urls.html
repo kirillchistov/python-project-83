@@ -16,9 +16,6 @@
               Имя
             </th>
             <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-              Дата создания
-            </th>
-            <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">
               Последняя проверка
             </th>
             <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">
@@ -37,9 +34,6 @@
                 >
                   {{ url.name }}
                 </a>
-              </td>
-              <td class="px-4 py-3 text-sm text-gray-900">
-                {{ url.created_at.strftime('%Y-%m-%d') }}
               </td>
               <td class="px-4 py-3 text-sm text-gray-900">
                 {% if url.last_check_at %}
